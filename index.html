@@ -47,7 +47,7 @@
     <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-analytics.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-firestore.js"></script>
     <script type="">
-        var firebaseConfig = {
+        firebase.initializeApp({
             apiKey: "AIzaSyA-cPtvzICBBXZLsJJraf-QR5wM4FJh3fk",
             authDomain: "note-83cea.firebaseapp.com",
             databaseURL: "https://note-83cea.firebaseio.com",
@@ -56,16 +56,14 @@
             messagingSenderId: "620523662148",
             appId: "1:620523662148:web:7a16262632234a544bc511",
             measurementId: "G-7ZDZ1LQDN2"
-        };
-        firebase.initializeApp(firebaseConfig);
+        });
         firebase.analytics();
-        var db = firebase.firestore();
     </script>
     <script>
-        var delayUploadTimer = null;
-        var username = "qianlifeng";
-        var textarea = document.getElementById('content');
-        textarea.focus();
+        let db = firebase.firestore();
+        let delayUploadTimer = null;
+        let username = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15); //random usernmae
+        let textarea = document.getElementById('content');
 
         function uploadContent() {
             if (delayUploadTimer != null) {
@@ -82,13 +80,31 @@
             }, 1000);
         }
 
-        db.collection("notes").doc(username).get().then(function (doc) {
-            if (doc.exists) {
-                textarea.value = doc.data().note;
+        function loadContent() {
+            db.collection("notes").doc(username).get().then(function (doc) {
+                if (doc.exists) {
+                    textarea.value = doc.data().note;
+                }
+            }).catch(function (error) {
+                console.log("Error getting document:", error);
+            });
+        }
+
+        function init() {
+            //load user name
+            let assignedUserName = new URLSearchParams(window.location.search).get('u');
+            if (assignedUserName === null) {
+                window.location.search = '?u=' + username;
+                return
+
             }
-        }).catch(function (error) {
-            console.log("Error getting document:", error);
-        });
+
+            username = assignedUserName
+            textarea.focus();
+            loadContent();
+        }
+
+        init();
     </script>
 </body>
 
