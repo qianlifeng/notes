@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>note</title>
+    <style>
+        body {
+            margin: 0;
+            background: #ebeef1;
+        }
+
+        .container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            bottom: 20px;
+            left: 20px;
+        }
+
+        #content {
+            font-size: 100%;
+            margin: 0;
+            padding: 20px;
+            overflow-y: auto;
+            resize: none;
+            width: 100%;
+            height: 100%;
+            min-height: 100%;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            border: 1px #ddd solid;
+            outline: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <textarea id="content" oninput="uploadContent()">
+        </textarea>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-firestore.js"></script>
+    <script type="">
+        var firebaseConfig = {
+            apiKey: "AIzaSyA-cPtvzICBBXZLsJJraf-QR5wM4FJh3fk",
+            authDomain: "note-83cea.firebaseapp.com",
+            databaseURL: "https://note-83cea.firebaseio.com",
+            projectId: "note-83cea",
+            storageBucket: "note-83cea.appspot.com",
+            messagingSenderId: "620523662148",
+            appId: "1:620523662148:web:7a16262632234a544bc511",
+            measurementId: "G-7ZDZ1LQDN2"
+        };
+        firebase.initializeApp(firebaseConfig);
+        firebase.analytics();
+        var db = firebase.firestore();
+    </script>
+    <script>
+        var delayUploadTimer = null;
+        var username = "qianlifeng";
+        var textarea = document.getElementById('content');
+        textarea.focus();
+
+        function uploadContent() {
+            if (delayUploadTimer != null) {
+                clearTimeout(delayUploadTimer);
+            }
+
+            delayUploadTimer = setTimeout(function () {
+                db.collection("notes").doc(username).set({
+                    note: textarea.value
+                }).then(function () {
+                }).catch(function (error) {
+                    console.error("Error adding document: ", error);
+                });
+            }, 1000);
+        }
+
+        db.collection("notes").doc(username).get().then(function (doc) {
+            if (doc.exists) {
+                textarea.value = doc.data().note;
+            }
+        }).catch(function (error) {
+            console.log("Error getting document:", error);
+        });
+    </script>
+</body>
+
+</html>
