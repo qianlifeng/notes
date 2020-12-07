@@ -62,7 +62,7 @@
     <script>
         let db = firebase.firestore();
         let delayUploadTimer = null;
-        let username = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15); //random usernmae
+        let username = Math.random().toString(36).substring(2, 6);
         let textarea = document.getElementById('content');
 
         function uploadContent() {
