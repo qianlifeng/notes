@@ -91,17 +91,13 @@
         }
 
         function init() {
-            //load user name
-            let assignedUserName = new URLSearchParams(window.location.search).get('u');
-            if (assignedUserName === null) {
-                window.location.search = '?u=' + username;
-                return
-
+            if (window.location.pathname === "/") {
+                window.location.pathname = '/' + username;
+            } else {
+                username = window.location.pathname.replace("/", "")
+                textarea.focus();
+                loadContent();
             }
-
-            username = assignedUserName
-            textarea.focus();
-            loadContent();
         }
 
         init();
